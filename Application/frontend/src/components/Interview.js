@@ -5,13 +5,21 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 const Interview = () => {
-  // Sample questions for the mock interview
-  const questions = [
-    "Tell me about yourself.",
-    "Why do you want this job?",
-    "What are your strengths and weaknesses?",
-  ];
+  const [questions, setQuestions] = useState([]); // State for questions from the backend
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [answer, setAnswer] = useState('');
+  const [feedback, setFeedback] = useState([]);
+  const [showNextQuestionButton, setShowNextQuestionButton] = useState(false);
+  const [showResultsButton, setShowResultsButton] = useState(false);
+  const [selectedSector, setSelectedSector] = useState('');
+  const [selectedDegree, setSelectedDegree] = useState('');
+  const [isInterviewStarted, setIsInterviewStarted] = useState(false); // New state for interview status
+  const [answers, setAnswers] = useState([]); // State for answers  
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { userId } = location.state || {};
 
+  // Hardcoded sectors and degrees
   const sectors = [
     "Web Developer",
     "Engineer",
@@ -33,68 +41,92 @@ const Interview = () => {
     "Expert"
   ];
 
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answer, setAnswer] = useState('');
-  const [feedback, setFeedback] = useState([]); // Store feedback for results
-  const [showNextQuestionButton, setShowNextQuestionButton] = useState(true);
-  const [showResultsButton, setShowResultsButton] = useState(false); // Control visibility of results button
-  const [selectedSector, setSelectedSector] = useState(''); // State for selected sector
-  const [selectedDegree, setSelectedDegree] = useState(''); // State for selected degree
-  const navigate = useNavigate();
-
   const handleNextQuestion = () => {
     if (answer.trim() === '') {
       alert('Please provide an answer.');
       return;
     }
 
-    // Simulate AI feedback
     const currentFeedback = `Feedback for your answer: "${answer}"`;
     setFeedback(prevFeedback => [
       ...prevFeedback,
       { question: questions[currentQuestion], answer, feedback: currentFeedback }
     ]);
 
-    // Move to the next question if available, otherwise finish the interview
+    setAnswers(prevAnswers => [...prevAnswers, answer]); // Add answer to answers array
+
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setAnswer('');
     } else {
-      // Hide the Finish Interview button and show results button
       setShowNextQuestionButton(false);
       setShowResultsButton(true);
     }
   };
 
-  const location = useLocation();
-  const { userId } = location.state || {}; // Access userId from the state
+  const handleStartInterview = async () => {
+    if (!selectedSector || !selectedDegree) {
+      alert('Please select both a sector and a degree.');
+      return;
+    }
 
-  const handleViewResults = async () => {
-    // Prepare the data for the interview
     const interviewData = {
-      type: selectedSector + ' ' + selectedDegree, // Include degree in the data sent to the backend
-      questions: feedback.map((item) => item.question).join(', '), // Join all questions into one string
-      feedback: feedback.map((item) => item.feedback).join(', '), // Join all feedback into one string
-      userId: userId, // Replace with the actual user ID from your authentication state
+      type: `${selectedSector} ${selectedDegree}`,
+      userId: userId, // Replace with the actual user ID
     };
 
     try {
-      // Upload interview data to the backend
-      await axios.post('http://localhost:5000/interviews', interviewData);
-      // Navigate to the results page
-      navigate('/results', { state: { results: feedback, userId: interviewData.userId } }); // when going to result page pass the id too
+      const response = await axios.post('http://localhost:5000/interviews/aiquestions', interviewData);
+      setQuestions(response.data.questions); // Assuming questions are returned as an array
+      setShowNextQuestionButton(true);
+      setCurrentQuestion(0);
+      setIsInterviewStarted(true);
     } catch (error) {
-      console.error('Error submitting interview:', error);
+      console.error('Error fetching questions:', error);
+      alert('Error fetching questions. Please try again.');
     }
   };
 
+  const handleViewResults = async () => {
+    console.log('Starting to view results...');
+    
+    const interviewData = {
+      type: `${selectedSector} ${selectedDegree}`,
+      questions: feedback.map((item) => item.question).join(', '),
+      feedback: feedback.map((item) => item.feedback).join(', '),
+      userId: userId,
+    };
+  
+    const feedbackData = {
+      questions: questions, // Ensure this is an array
+      answers: answers      // Ensure this is an array
+    };
+  
+    try {
+      console.log('Sending feedback data:', feedbackData);
+      
+      const feedbackResponse = await axios.post('http://localhost:5000/interviews/aifeedback', feedbackData);
+      
+      console.log("Received feedback response:", feedbackResponse.data.feedback);
+
+      interviewData.feedback = feedbackResponse.data.feedback;
+  
+      await axios.post('http://localhost:5000/interviews', interviewData);
+      console.log("Interview data submitted");
+  
+      navigate('/results', { state: { results: feedbackResponse.data, userId: interviewData.userId } });
+    } catch (error) {
+      console.error('Error submitting interview:', error.response ? error.response.data : error.message);
+      alert('Error submitting interview. Please try again.');
+    }
+  };
+  
   return (
     <Container maxWidth="sm" style={{ marginTop: '50px', textAlign: 'center' }}>
       <Typography variant="h4" gutterBottom>
-        Interview Question {currentQuestion + 1}/{questions.length}
+        Interview Question {currentQuestion + 1}/{questions.length || 0}
       </Typography>
 
-      {/* Sector Selection Dropdown */}
       <FormControl fullWidth style={{ marginBottom: '20px' }}>
         <InputLabel id="sector-select-label">Select Sector</InputLabel>
         <Select
@@ -109,7 +141,6 @@ const Interview = () => {
         </Select>
       </FormControl>
 
-      {/* Degree Selection Dropdown */}
       <FormControl fullWidth style={{ marginBottom: '20px' }}>
         <InputLabel id="degree-select-label">Select Degree</InputLabel>
         <Select
@@ -124,8 +155,19 @@ const Interview = () => {
         </Select>
       </FormControl>
 
+      {!isInterviewStarted && (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleStartInterview}
+          sx={{ marginBottom: '20px', width: '100%', padding: '10px' }}
+        >
+          Start Interview
+        </Button>
+      )}
+
       <Typography variant="h6" gutterBottom>
-        {questions[currentQuestion]}
+        {questions[currentQuestion] || "Select a sector and degree to get started!"}
       </Typography>
 
       <Box sx={{ margin: '20px 0' }}>
@@ -162,7 +204,6 @@ const Interview = () => {
         </Button>
       )}
       
-      {/* Display selected degree */}
       {selectedDegree && (
         <Typography variant="h6" style={{ marginTop: '20px' }}>
           Selected Degree: {selectedDegree}
