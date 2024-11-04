@@ -5,8 +5,8 @@ import { Container, Typography, Table, TableBody, TableCell, TableContainer, Tab
 
 const Results = () => {
   const location = useLocation();
-  const navigate = useNavigate(); // Hook to navigate to different routes
-  const userId = location.state?.userId; // Get userId from location state
+  const navigate = useNavigate(); // hook to navigate to different routes
+  const userId = location.state?.userId; // get userId from location state
   const [interviews, setInterviews] = useState([]);
   const [error, setError] = useState('');
 
@@ -28,20 +28,14 @@ const Results = () => {
     }
   }, [userId]);
 
-  // Function to format questions and feedback into multiple lines
+  // function to format questions and feedback into multiple lines
   const formatText = (text) => {
     return text.split(',').map((line, index) => (
       <Typography key={index} variant="body2">{line.trim()}</Typography>
     ));
   };
 
-  // // Function to format the createdAt date - purvonachalno beshe taka, ama sled tova iskah da displeivam sled zapetaqta na nov red
-  // const formatDate = (dateString) => {
-  //   const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-  //   return new Date(dateString).toLocaleDateString(undefined, options);
-  // };
-
-    // Function to format the createdAt date
+    // function to format the createdAt date
     const formatDate = (dateString) => {
       const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
       const timeOptions = { hour: '2-digit', minute: '2-digit' };
@@ -50,13 +44,13 @@ const Results = () => {
       const formattedDate = date.toLocaleDateString(undefined, dateOptions); // Format the date
       const formattedTime = date.toLocaleTimeString(undefined, timeOptions); // Format the time
   
-      return { formattedDate, formattedTime }; // Return both parts
+      return { formattedDate, formattedTime }; 
     };
 
 
-  // Function to navigate to the home page
+  // function to navigate to the home page
   const handleHomeRedirect = () => {
-    navigate('/', {state: {userId}}); // Redirect to the home page
+    navigate('/', {state: {userId}}); // redirect to the home page
   };
 
   return (
@@ -67,7 +61,7 @@ const Results = () => {
         gutterBottom 
         style={{
           fontWeight: 'bold',
-          color: '#3f51b5', // Primary color
+          color: '#3f51b5', 
           textAlign: 'center',
           textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)', // Subtle text shadow
           marginBottom: '20px',
@@ -89,7 +83,7 @@ const Results = () => {
           <TableBody>
             {interviews.length > 0 ? (
               interviews.map((interview) => {
-                const { formattedDate, formattedTime } = formatDate(interview.createdAt); // Get formatted date and time
+                const { formattedDate, formattedTime } = formatDate(interview.createdAt); // get formatted date and time
                 return (
                   <TableRow key={interview.id}>
                     <TableCell>

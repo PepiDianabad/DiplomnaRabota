@@ -11,8 +11,8 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
-# Expose the backend port
-EXPOSE 5000
+# Expose the frontend port
+EXPOSE 3001
 
-# Run the backend server with node server.js
-CMD ["node", "server.js"]
+# Run the frontend with npm start
+CMD ["npm", "start"]

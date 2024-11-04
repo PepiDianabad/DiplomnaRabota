@@ -7,7 +7,7 @@ import axios from 'axios';
 const SignUp = ({ setUser }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(''); // State to hold error messages
+  const [error, setError] = useState(''); // state to hold error messages
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -20,16 +20,15 @@ const SignUp = ({ setUser }) => {
           password,
         });
 
-        const  userId  = response.data.userId; // Extract userId from response
+        const  userId  = response.data.userId; // extract userId from response
 
         setUser({ username });
 
         console.log("Manual userid", userId);
         console.log("From the query", response.data.userId);
-        navigate('/', { state: { userId } }); // Pass userId in navigation state
+        navigate('/', { state: { userId } }); // pass userId in navigation state
       } catch (err) {
-        setError(err.response?.data?.error || 'Signup failed. Please try again.'); // Set error message
-        console.error(err); // Log the error for debugging
+        setError(err.response?.data?.error || 'Signup failed. Please try again.'); 
       }
     } else {
       alert('Please enter both username and password');

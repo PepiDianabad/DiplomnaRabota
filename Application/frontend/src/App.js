@@ -9,7 +9,7 @@ import SignUp from './components/SignUp';
 
 
 function App() {
-  const [user, setUser] = useState(null); // Manage user state
+  const [user, setUser] = useState(null); // manage user state
 
   return (
     <Router>  

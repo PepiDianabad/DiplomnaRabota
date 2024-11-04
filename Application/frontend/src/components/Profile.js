@@ -3,7 +3,7 @@ import { Container, Typography, Box } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 
 const Profile = ({ user }) => {
-  // Sample previous interviews data
+  // sample previous interviews data
   const previousInterviews = [
     { id: 1, date: '2024-09-30', feedback: 'Great answers, but work on your presentation.' },
     { id: 2, date: '2024-10-05', feedback: 'Good technical knowledge, but need to clarify your thought process.' },

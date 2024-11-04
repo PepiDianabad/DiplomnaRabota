@@ -6,7 +6,7 @@ import { Button, Typography, Container, Box, Paper } from '@mui/material';
 const Home = ({ user }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userId } = location.state || {}; // Access userId from the state
+  const { userId } = location.state || {}; // access userId from the state
 
   console.log("home", userId);
 
@@ -77,7 +77,7 @@ const Home = ({ user }) => {
                   color="primary" 
                   fullWidth 
                   onClick={handleSignIn}
-                  style={{ padding: '10px 0', marginBottom: '10px' }} // Add some margin below
+                  style={{ padding: '10px 0', marginBottom: '10px' }} 
                 >
                   Sign In
                 </Button>

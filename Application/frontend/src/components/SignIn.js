@@ -7,10 +7,10 @@ import axios from 'axios';
 const SignIn = ({ setUser }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(''); // State to hold error messages
+  const [error, setError] = useState(''); // state to hold error messages
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => { // Add async keyword here
+  const handleSubmit = async (e) => { // add async keyword here
     e.preventDefault();
     
     if (username && password) {
@@ -25,11 +25,10 @@ const SignIn = ({ setUser }) => {
         // Handle successful login, e.g., set user and navigate
         setUser({ username });
         console.log(response.data);
-        // After successful login
+        // after successful login
         navigate('/', { state: { userId } }); // Navigate to the home page after successful login and pass the user id
       } catch (err) {
-        setError('Invalid username or password'); // Set error message
-        console.error(err); // Log the error for debugging
+        setError('Invalid username or password');
       }
     } else {
       alert('Please enter both username and password');

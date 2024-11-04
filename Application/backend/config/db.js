@@ -1,14 +1,14 @@
 const { Sequelize } = require('sequelize');
 
-// Set the PostgreSQL connection details
+// connection details
 const sequelize = new Sequelize('interview_prep_db', 'postgres', 'password', {
-  host: 'localhost',  // This 'db' is the service name in Docker Compose, acting as the hostname
+  host: 'postgres',  
   dialect: 'postgres',
-  port: 5432,  // PostgreSQL default port
+  port: 5432,  
   logging: false, // Set to true if you want to see the SQL queries being executed
 });
 
-// Test the connection
+// connection test
 sequelize.authenticate()
   .then(() => {
     console.log('Connected to PostgreSQL database successfully.');

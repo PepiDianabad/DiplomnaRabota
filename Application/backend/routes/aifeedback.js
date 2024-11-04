@@ -7,19 +7,15 @@ const openai = new OpenAI({
 
 // Helper function to generate AI feedback for the whole interview
 async function generateAIFeedback(feedbackData) {
-    // Log the incoming feedbackData
-    console.log('Received feedbackData:');
 
     // Destructure questions and answers from feedbackData
-    const { questions, answers } = feedbackData; // Use feedbackData.body directly
-    //console.log(questions)
-    console.log("geeeei")
+    const { questions, answers } = feedbackData; // Use feedbackData directly
 
     // Check if questions and answers are defined
     if (!questions || !answers) {
         throw new Error('Questions or answers are undefined');
     }
-    // Create a prompt based on all questions and answers
+    // Prompt based on all questions and answers
     const prompt = `Given the following interview questions and answers, provide general feedback for the entire interview:\n\n` +
         questions.map((question, index) => `Q${index + 1}: ${question}\nA${index + 1}: ${answers[index]}`).join('\n\n') +
         `\n\nPlease provide comprehensive feedback based on the entire interview.`;
@@ -31,9 +27,9 @@ async function generateAIFeedback(feedbackData) {
             max_tokens: 500,
         });
 
+        //get the feedback from the query response (query to the gpt api)
         const feedback = response.choices[0].message.content.trim();
         feeedback = feedback.toString();
-        //console.log(feeedback);
         return feeedback;
     } catch (error) {
         console.error("Error generating AI feedback:", error);

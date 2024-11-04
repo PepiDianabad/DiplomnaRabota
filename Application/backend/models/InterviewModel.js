@@ -1,7 +1,6 @@
-// models/InterviewModel.js
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
-const User = require('./UserModel'); // Import the User model
+const User = require('./UserModel'); // Importing User Model
 
 
 class Interview extends Model {}
@@ -22,7 +21,7 @@ Interview.init({
   userId: {
     type: DataTypes.INTEGER,
     references: {
-      model: 'Users', // Assumes the users table is named 'Users'
+      model: 'Users', // user tble is named 'users'
       key: 'id',
     },
     allowNull: false,
@@ -32,7 +31,7 @@ Interview.init({
   modelName: 'Interview',
 });
 
-// Define the association back to User (optional)
+// Define the relation back to User - UserId in the Interview table refers to the ID in the User table
 Interview.belongsTo(User, {
   foreignKey: 'userId', // This should match the userId in the User model
   onDelete: 'CASCADE', // Optional: specify what happens when a user is deleted

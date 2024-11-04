@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 const Interview = () => {
-  const [questions, setQuestions] = useState([]); // State for questions from the backend
+  const [questions, setQuestions] = useState([]); // state for questions from the backend
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answer, setAnswer] = useState('');
   const [feedback, setFeedback] = useState([]);
@@ -13,13 +13,13 @@ const Interview = () => {
   const [showResultsButton, setShowResultsButton] = useState(false);
   const [selectedSector, setSelectedSector] = useState('');
   const [selectedDegree, setSelectedDegree] = useState('');
-  const [isInterviewStarted, setIsInterviewStarted] = useState(false); // New state for interview status
-  const [answers, setAnswers] = useState([]); // State for answers  
+  const [isInterviewStarted, setIsInterviewStarted] = useState(false); // new state for interview status
+  const [answers, setAnswers] = useState([]); // state for answers  
   const navigate = useNavigate();
   const location = useLocation();
   const { userId } = location.state || {};
 
-  // Hardcoded sectors and degrees
+  // sectors and degrees
   const sectors = [
     "Web Developer",
     "Engineer",
@@ -53,7 +53,7 @@ const Interview = () => {
       { question: questions[currentQuestion], answer, feedback: currentFeedback }
     ]);
 
-    setAnswers(prevAnswers => [...prevAnswers, answer]); // Add answer to answers array
+    setAnswers(prevAnswers => [...prevAnswers, answer]); // add answer to answers array
 
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
@@ -72,12 +72,12 @@ const Interview = () => {
 
     const interviewData = {
       type: `${selectedSector} ${selectedDegree}`,
-      userId: userId, // Replace with the actual user ID
+      userId: userId,
     };
 
     try {
       const response = await axios.post('http://localhost:5000/interviews/aiquestions', interviewData);
-      setQuestions(response.data.questions); // Assuming questions are returned as an array
+      setQuestions(response.data.questions); // assuming questions are returned as an array
       setShowNextQuestionButton(true);
       setCurrentQuestion(0);
       setIsInterviewStarted(true);
@@ -98,8 +98,8 @@ const Interview = () => {
     };
   
     const feedbackData = {
-      questions: questions, // Ensure this is an array
-      answers: answers      // Ensure this is an array
+      questions: questions, // array
+      answers: answers      // array
     };
   
     try {

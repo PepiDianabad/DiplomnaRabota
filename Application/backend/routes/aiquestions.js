@@ -1,4 +1,3 @@
-// aiQuestionGenerator.js
 const OpenAI = require('openai');
 require('dotenv').config();
 
@@ -6,7 +5,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Helper function to generate AI questions
+// Function to generate AI questions
 async function generateAIQuestions(sector, degree) {
   const prompt = `Generate 5 interview questions for a ${degree} ${sector} interview. Please, don't include any commas in the questions, because I cannot separate the questions!`;
 
